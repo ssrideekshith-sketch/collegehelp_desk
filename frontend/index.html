@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus & Study Help Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-3px);
+        }
+
+        .header-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a202c;
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .action-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        button:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.recording {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            animation: pulse-red 1.5s infinite;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .chat-box-section {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4f46e5;
+        }
+
+        #sendBtn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            width: auto;
+            padding: 0 20px;
+        }
+
+        #status {
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 13px;
+            margin: 15px 0;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .response-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+        }
+
+        .response-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .response-box label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4f46e5;
+            margin-bottom: 4px;
+        }
+
+        .response-box p {
+            margin: 0 0 12px 0;
+            color: #2d3748;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .response-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 8px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-icon">🎓</div>
+    <h2>Campus & Study Help Desk</h2>
+    <p class="subtitle">Your intelligent voice & text assistant</p>
+    
+    <div class="action-section">
+        <button id="recordBtn">🎤 Start Voice Recording</button>
+        
+        <div class="chat-box-section">
+            <input type="text" id="textInput" placeholder="Ask about college policies or study questions...">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <p id="status"></p>
+
+    <div class="response-box" id="responseCard">
+        <label>You Asked / Said:</label>
+        <p id="transcriptionText">...</p>
+        
+        <label>Help Desk Answer:</label>
+        <p id="responseText">Waiting for your question...</p>
+    </div>
+
+    <audio id="audioPlayer" controls style="display:none;"></audio>
+</div>
+
+<script>
+    const recordBtn = document.getElementById('recordBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const textInput = document.getElementById('textInput');
+    const statusText = document.getElementById('status');
+    const transcriptionText = document.getElementById('transcriptionText');
+    const responseText = document.getElementById('responseText');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const responseCard = document.getElementById('responseCard');
+
+    function showResponse(transcription, answer, audioUrl) {
+        transcriptionText.innerText = transcription;
+        responseText.innerText = answer;
+        responseCard.classList.add('visible');
+        statusText.innerText = "✨ Done!";
+
+        audioPlayer.src = `http://127.0.0.1:8000${audioUrl}?t=${new Date().getTime()}`;
+        audioPlayer.style.display = "block";
+        
+        audioPlayer.play().catch(error => {
+            console.log("Autoplay restricted by browser:", error);
+            statusText.innerText = "✨ Done! Click play on audio.";
+        });
+    }
+
+    async function submitQuery(question) {
+        if (!question) return;
+        statusText.innerText = "⏳ Thinking...";
+        
+        try {
+            const res = await fetch("http://127.0.0.1:8000/ask-text", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: question })
+            });
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.detail || "Server error occurred");
+            }
+
+            showResponse(data.transcription, data.answer, data.audio_url);
+        } catch (error) {
+            statusText.innerText = `❌ ${error.message}`;
+            console.error("Fetch error:", error);
+        }
+    }
+
+    sendBtn.onclick = () => {
+        const question = textInput.value.trim();
+        submitQuery(question);
+        textInput.value = "";
+    };
+
+    textInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendBtn.click();
+    });
+
+    // Voice recognition handling using native browser speech API
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        recordBtn.style.display = "none";
+        statusText.innerText = "⚠️ Voice recognition not supported in this browser. Please use Chrome.";
+    } else {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        let isRecording = false;
+        let finalTranscript = "";
+
+        recordBtn.onclick = () => {
+            if (!isRecording) {
+                finalTranscript = "";
+                textInput.value = "";
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.error(e);
+                }
+            } else {
+                recognition.stop();
+            }
+        };
+
+        recognition.onstart = () => {
+            isRecording = true;
+            recordBtn.innerText = "🛑 Stop Recording";
+            recordBtn.classList.add("recording");
+            statusText.innerText = "🔴 Listening... Speak clearly, then click Stop.";
+        };
+
+        recognition.onresult = (event) => {
+            let interimTranscript = "";
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            textInput.value = finalTranscript + interimTranscript;
+        };
+
+        recognition.onerror = (event) => {
+            statusText.innerText = `❌ Speech error: ${event.error}`;
+            resetRecordButton();
+        };
+
+        recognition.onend = () => {
+            resetRecordButton();
+            const question = textInput.value.trim();
+            if (question) {
+                submitQuery(question);
+            }
+        };
+
+        function resetRecordButton() {
+            isRecording = false;
+            recordBtn.innerText = "🎤 Start Voice Recording";
+            recordBtn.classList.remove("recording");
+        }
+    }
+</script>
+
+</body>
+</html>

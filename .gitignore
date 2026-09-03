@@ -1,0 +1,16 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+venv/
+*.py0
+
+# Temporary audio files
+*.mp3
+*.wav
+
+# OS / IDE junk
+.DS_Store
+Thumbs.db
+.vscode/
