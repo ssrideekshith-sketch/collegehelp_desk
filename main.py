@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+#It helps load api key from .envfile
 load_dotenv()
 
 app = FastAPI()
@@ -23,22 +23,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize the official Google GenAI Client
+#Settuping gemini client to get response
 client = genai.Client()
 
-# Directory to save temporary generated audio outputs
+#To save audio files temporary 
 AUDIO_DIR = tempfile.gettempdir()
 
-# Official College Information Dataset
+#College information data regarding 
 COLLEGE_CONTEXT = """
 OFFICIAL COLLEGE INFORMATION DATASET:
 - College Working Hours: 9:00 AM to 4:00 PM (Monday to Saturday)
 - Office / Administration Timings: 9:30 AM to 4:30 PM
 - Library Timings: 8:00 AM to 8:00 PM
 - Lunch Break: 1:00 PM to 2:00 PM
-- Principal: Dr. Sharma
-- Location: Main Campus, Tech City
+- Principal: Dr. Parthasarathi
+- Location: Maisammaguda,Hyderabad,Telangana,India
 - Annual Fest: TechSpark (Held every March)
+-College Rules:
+1. Attendance: Students must maintain a minimum of 75% attendance in each subject to be eligible for exams.
+2.Dress Code: Students must adhere to the college's dress code policy at all times.
+3.Behavior: Students must conduct themselves in a manner that reflects positively on the college and its values.
+4. Academic Integrity: Plagiarism and cheating are strictly prohibited and will result in disciplinary action.
+5. Mobile Phones: Use of mobile phones in classrooms and labs is prohibited unless permitted by the faculty.
+6. Library Usage: Students must follow library rules and return borrowed materials on time.
+7. Campus Cleanliness: Students are expected to keep the campus clean and dispose of waste properly.
+8. Safety: Students must follow all safety guidelines and report any unsafe conditions to the administration.
+-Workshops and Seminars: The college regularly organizes workshops and seminars on various technical and non-technical topics. Students are encouraged to participate actively.
+-Upocoming Events:
+1. TechSpark 2024: Annual technical fest scheduled for March 15-17, 2024.
+2. Guest Lecture on AI and Machine Learning: Scheduled for February 20, 2024, in the main auditorium.
+3. Workshop on Cybersecurity: Scheduled for March 5, 2024, in the computer lab.
+4. Cultural Fest: Scheduled for April 10-12, 2024, featuring music, dance, and drama competitions.
+5. Sports Meet: Scheduled for May 1-3, 2024, including athletics and team sports events.        
+6. Alumni Meet: Scheduled for June 15, 2024, inviting alumni to share their experiences and insights with current students.         
+
 """
 
 SYSTEM_INSTRUCTION = f"""
@@ -47,7 +65,7 @@ You are an intelligent Campus & Study Help Desk assistant.
 {COLLEGE_CONTEXT}
 
 GUIDELINES:
-1. If the user asks about college-specific information (such as timings, library hours, office hours, location, principal, or college rules), you MUST answer strictly using the Official College Information Dataset above.
+1. If the user asks about college-specific information (such as timings, library hours, office hours, location, principal, or college rules,Upocoming Events,Workshops and Seminars), you MUST answer strictly using the Official College Information Dataset above.
 2. If the user asks about subject-related doubts, programming, coding, math, science, or general academic questions, use your general AI knowledge to provide a clear, helpful, and educational response.
 """
 
@@ -61,7 +79,7 @@ async def ask_text(payload: TextQuery):
     question = payload.question
 
     try:
-        # FIXED: Changed model string to 'gemini-3.5-flash' as recommended by the error log
+            #Gemini-3.6 falsh model based on new  api key
         response = client.models.generate_content(
             model="gemini-3.6-flash",
             contents=question,
@@ -92,7 +110,7 @@ async def ask_text(payload: TextQuery):
         "audio_url": f"/audio/{audio_filename}",
     }
 
-
+#Asynchronisis fumction to handle input and response 
 @app.post("/ask")
 async def ask_audio(file: UploadFile = File(...)):
     audio_bytes = await file.read()
